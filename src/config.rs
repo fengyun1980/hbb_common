@@ -100,7 +100,7 @@ const CHARS: &[char] = &[
     'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 ];
 
-pub const RENDEZVOUS_SERVERS: &[&str] = &["rustdesk.tmnas.top"];
+pub const RENDEZVOUS_SERVERS: &[&str] = &["152.32.216.166"];
 pub const RS_PUB_KEY: &str = "98EBBD36937F36AF909BF77AA0826DC0";
 
 pub const RENDEZVOUS_PORT: i32 = 21116;
