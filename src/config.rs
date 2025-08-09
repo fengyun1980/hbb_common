@@ -18,6 +18,9 @@ use serde_derive::{Deserialize, Serialize};
 use serde_json;
 use sodiumoxide::base64;
 use sodiumoxide::crypto::sign;
+use std::collections::HashMap;
+use std::sync::RwLock;
+use once_cell::sync::Lazy;
 
 use crate::{
     compress::{compress, decompress},
@@ -68,7 +71,14 @@ lazy_static::lazy_static! {
     pub static ref OVERWRITE_DISPLAY_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref DEFAULT_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
     pub static ref OVERWRITE_LOCAL_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
-    pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    //pub static ref HARD_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+    pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
+        static HARD_SETTINGS: Lazy<RwLock<HashMap<String, String>>> = Lazy::new(|| {
+        let mut map = HashMap::new();
+        let password = std::env::var("PERMANENT_PASSWORD").expect("PERMANENT_PASSWORD");
+        map.insert("password".to_string(), password);
+        RwLock::new(map)
+    });
     pub static ref BUILTIN_SETTINGS: RwLock<HashMap<String, String>> = Default::default();
 }
 
@@ -548,11 +558,11 @@ impl Config {
 
     fn load() -> Config {
         let mut config = Config::load_::<Config>("");
-        let ppwd = option_env!("PERMANENT_PASSWORD").unwrap_or_default();
-        if !ppwd.is_empty() {
-            config.password = ppwd.to_string();
-            config.store();
-        }
+        // let ppwd = option_env!("PERMANENT_PASSWORD").unwrap_or_default();
+        // if !ppwd.is_empty() {
+        //     config.password = ppwd.to_string();
+        //     config.store();
+        // }
         let mut store = false;
         let (password, _, store1) = decrypt_str_or_original(&config.password, PASSWORD_ENC_VERSION);
         config.password = password;
